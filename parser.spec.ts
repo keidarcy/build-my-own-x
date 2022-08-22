@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { parser } from './parser';
+import { NodeTypes, parser } from './parser';
 import { Token, TokenTypes } from './tokenizer';
 
 describe('parser', () => {
-  it.skip('parse', () => {
+  it('parser', () => {
     const tokens = [
       { type: 'paren', value: '(' },
       { type: 'name', value: 'add' },
@@ -60,8 +60,91 @@ describe('parser', () => {
       type: 'Program',
       body: [
         {
-          type: 'Number',
+          type: 'NumberLiteral',
           value: '2',
+        },
+      ],
+    };
+    const result = parser(tokens);
+    expect(result).toEqual(ast);
+  });
+
+  it('callExpression', () => {
+    const tokens = [
+      { type: 'paren', value: '(' },
+      { type: 'name', value: 'add' },
+      { type: 'number', value: '2' },
+      { type: 'number', value: '4' },
+      { type: 'paren', value: ')' },
+    ] as Token[];
+
+    const ast = {
+      type: NodeTypes.Root,
+      body: [
+        {
+          type: NodeTypes.CallExpression,
+          name: 'add',
+          params: [
+            {
+              type: NodeTypes.NumberLiteral,
+              value: '2',
+            },
+            {
+              type: NodeTypes.NumberLiteral,
+              value: '4',
+            },
+          ],
+        },
+      ],
+    };
+    const result = parser(tokens);
+    expect(result).toEqual(ast);
+  });
+
+  it('two callExpression', () => {
+    const tokens = [
+      { type: 'paren', value: '(' },
+      { type: 'name', value: 'add' },
+      { type: 'number', value: '2' },
+      { type: 'number', value: '4' },
+      { type: 'paren', value: ')' },
+      { type: 'paren', value: '(' },
+      { type: 'name', value: 'add' },
+      { type: 'number', value: '2' },
+      { type: 'number', value: '4' },
+      { type: 'paren', value: ')' },
+    ] as Token[];
+
+    const ast = {
+      type: NodeTypes.Root,
+      body: [
+        {
+          type: NodeTypes.CallExpression,
+          name: 'add',
+          params: [
+            {
+              type: NodeTypes.NumberLiteral,
+              value: '2',
+            },
+            {
+              type: NodeTypes.NumberLiteral,
+              value: '4',
+            },
+          ],
+        },
+        {
+          type: NodeTypes.CallExpression,
+          name: 'add',
+          params: [
+            {
+              type: NodeTypes.NumberLiteral,
+              value: '2',
+            },
+            {
+              type: NodeTypes.NumberLiteral,
+              value: '4',
+            },
+          ],
         },
       ],
     };
