@@ -1,8 +1,7 @@
-import { createExpect } from 'vitest';
 import { Token, TokenTypes } from './tokenizer';
 
 export enum NodeTypes {
-  Root = 'Program',
+  Root = 'Root',
   NumberLiteral = 'NumberLiteral',
   CallExpression = 'CallExpression',
 }
@@ -11,20 +10,27 @@ interface Node {
   type: NodeTypes;
 }
 
-interface RootNode extends Node {
+export interface RootNode extends Node {
+  type: NodeTypes.Root;
   body: ChildNode[];
+  context?: ChildNode[];
 }
 
 interface NumberNode extends Node {
+  type: NodeTypes.NumberLiteral;
   value: string;
 }
 
 interface CallExpressionNode extends Node {
+  type: NodeTypes.CallExpression;
   name: string;
   params: ChildNode[];
+  context?: ChildNode[];
 }
 
-type ChildNode = NumberNode | CallExpressionNode;
+export type ChildNode = NumberNode | CallExpressionNode;
+
+export type ParentNode = RootNode | CallExpressionNode;
 
 function createRootNode(): RootNode {
   return {

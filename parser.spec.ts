@@ -17,7 +17,7 @@ describe('parser', () => {
     ] as Token[];
 
     const ast = {
-      type: 'Program',
+      type: 'Root',
       body: [
         {
           type: 'CallExpression',
@@ -57,7 +57,7 @@ describe('parser', () => {
       },
     ];
     const ast = {
-      type: 'Program',
+      type: 'Root',
       body: [
         {
           type: 'NumberLiteral',
