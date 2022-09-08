@@ -1,0 +1,13 @@
+{
+  "name": "cest-test-framework",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Xing Yahao",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "glob": "^8.0.3",
+    "jest-haste-map": "^29.0.2",
+    "jest-worker": "^29.0.2"
+  }
+}
