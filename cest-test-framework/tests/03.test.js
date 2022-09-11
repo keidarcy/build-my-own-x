@@ -1,1 +1,1 @@
-expect(3).toBe(4);
+expect('good').toContain('oo');

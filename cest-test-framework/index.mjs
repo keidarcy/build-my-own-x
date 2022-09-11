@@ -26,21 +26,54 @@ await hasteMap.setupCachePath(hasteMapOptions);
 
 const { hasteFS } = await hasteMap.build();
 import { Worker } from 'jest-worker';
-import { runTest } from './worker.js';
 import chalk from 'chalk';
 
 const worker = new Worker(join(root, 'worker.js'), {
   enableWorkerThreads: true,
 });
 
-const testFiles = hasteFS.matchFilesWithGlob(['**/*.test.js']);
+const testFiles = hasteFS.matchFilesWithGlob([
+  process.argv[2] ? `**/${process.argv[2]}` : '**/*.test.js',
+]);
+let hasFailed = false;
 // loop a set
-for (const testFile of testFiles) {
-  const { success, errorMessage } = await worker.runTest(testFile);
-  const status = success ? chalk.green.inverse('PASS') : chalk.red.inverse('FAIL');
-  console.log(status + ' ' + relative(root, testFile));
+for await (const testFile of testFiles) {
+  const { success, testResults, errorMessage } = await worker.runTest(testFile);
+  const status = success
+    ? chalk.green.inverse.bold(' PASS ')
+    : chalk.red.inverse.bold(' FAIL ');
+  console.log(status + '\n' + chalk.dim(relative(root, testFile)) + '\n');
   if (!success) {
+    hasFailed = true;
+    if (testResults) {
+      testResults
+        .filter((result) => result.errors.length)
+        .forEach((result) => {
+          console.log(result.testPath.slice(1).join(' \n') + result.errors[0]);
+        });
+    } else if (errorMessage) {
+      console.log('  ' + errorMessage);
+    }
   }
 }
 
+// await Promise.all(
+//   Array.from(testFiles).map(async (testFile) => {
+//     const { success, errorMessage } = await worker.runTest(testFile);
+//     const status = success
+//       ? chalk.green.inverse.bold(' PASS ')
+//       : chalk.red.inverse.bold(' FAIL ');
+
+//     console.log(status + '\n' + chalk.dim(relative(root, testFile)) + '\n');
+//     if (!success) {
+//       console.log('  ' + errorMessage);
+//     }
+//   }),
+// );
+
 worker.end();
+
+if (hasFailed) {
+  console.log(chalk.red.bold('The test run failed'));
+  process.exit(1);
+}
