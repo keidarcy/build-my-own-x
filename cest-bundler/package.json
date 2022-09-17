@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@babel/core": "^7.19.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.18.6",
+    "chalk": "^5.0.1",
+    "jest-haste-map": "^29.0.3",
+    "jest-resolve": "^29.0.3",
+    "jest-resolve-dependencies": "^29.0.3",
+    "worker": "^0.4.0",
+    "yargs": "^17.5.1"
+  },
+  "name": "cest-bundler",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Xing Yahao",
+  "license": "MIT"
+}
