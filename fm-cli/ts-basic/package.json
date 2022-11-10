@@ -1,0 +1,17 @@
+{
+  "name": "fm-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Xing Yahao",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^18.11.7",
+    "tsx": "^3.11.0",
+    "typescript": "4.3"
+  }
+}
