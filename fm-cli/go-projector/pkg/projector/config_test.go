@@ -1,7 +1,7 @@
 package projector_test
 
 import (
-	// "reflect"
+	"reflect"
 	"testing"
 
 	"example.com/go-projector/pkg/projector"
@@ -17,7 +17,7 @@ func getOpts(args []string) *projector.Opts {
 
 }
 
-func testConfig(args []string, operation projector.Operation, t *testing.T) {
+func testConfig(args []string, excepted []string, operation projector.Operation, t *testing.T) {
 	opts := getOpts(args)
 	config, err := projector.NewConfig(opts)
 
@@ -29,21 +29,24 @@ func testConfig(args []string, operation projector.Operation, t *testing.T) {
 		t.Errorf("NewConfig did not set Operation but got %+v", config.Operation)
 	}
 
+	if !reflect.DeepEqual(config.Args, excepted) {
+		t.Errorf("NewConfig set Args but got %+v", config.Args)
+	}
 }
 
 func TestProject(t *testing.T) {
-	testConfig([]string{}, projector.Print, t)
+	testConfig([]string{}, []string{}, projector.Print, t)
 
 }
 
 func TestProjectPrintKey(t *testing.T) {
-	testConfig([]string{"foo"}, projector.Print, t)
+	testConfig([]string{"foo"}, []string{"foo"}, projector.Print, t)
 }
 
 func TestProjectAdd(t *testing.T) {
-	testConfig([]string{"add", "foo", "bar"}, projector.Add, t)
+	testConfig([]string{"add", "foo", "bar"}, []string{"foo", "bar"}, projector.Add, t)
 }
 
 func TestProjectRemove(t *testing.T) {
-	testConfig([]string{"remove", "bar"}, projector.Remove, t)
+	testConfig([]string{"rm", "bar"}, []string{"bar"}, projector.Remove, t)
 }
