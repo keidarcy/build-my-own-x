@@ -48,7 +48,7 @@ function getConfig(opts: Opts): string {
 
   if (loc === home) {
     // return path.join(loc, ".projector.json"); // ~/.projector.json
-    return path.join(loc, "config/projector", "projector.json"); // ~/config/projector/projector.json
+    return path.join(loc, ".config/projector", "projector.json"); // ~/config/projector/projector.json
   }
 
   return path.join(loc, "projector", "projector.json");

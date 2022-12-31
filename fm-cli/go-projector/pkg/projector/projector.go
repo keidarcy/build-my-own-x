@@ -16,10 +16,10 @@ type Projector struct {
 }
 
 func CreateProjector(config *Config, data *Data) *Projector {
-    return &Projector{
-        config: config,
-        data: data,
-    }
+	return &Projector{
+		config: config,
+		data:   data,
+	}
 }
 
 func (p *Projector) GetValue(key string) (string, bool) {
@@ -68,6 +68,22 @@ func (p *Projector) RemoveValue(key string) {
 	}
 }
 
+func (p *Projector) Save() error {
+	dir := path.Dir(p.config.Config)
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		err = os.MkdirAll(dir, 0755)
+		if err != nil {
+			return err
+		}
+	}
+
+	contents, err := json.Marshal(p.data)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(p.config.Config, contents, 0755)
+}
+
 func defaultProjector(config *Config) *Projector {
 	return &Projector{
 		config: config,
@@ -78,7 +94,7 @@ func defaultProjector(config *Config) *Projector {
 }
 
 func NewProject(config *Config) *Projector {
-	if _, err := os.Stat(config.Config); err != nil {
+	if _, err := os.Stat(config.Config); err == nil {
 		contents, err := os.ReadFile(config.Config)
 		if err != nil {
 			return defaultProjector(config)
@@ -96,6 +112,5 @@ func NewProject(config *Config) *Projector {
 			config: config,
 		}
 	}
-
 	return defaultProjector(config)
 }

@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import fs from 'node:fs';
 import path from 'node:path';
 import { Config } from './config';
 
@@ -18,7 +18,6 @@ const defaultData = {
 }
 
 export default class Projector {
-
   constructor(private config: Config, private data: Data) { }
 
   getValueAll(): { [key: string]: string } {
@@ -64,6 +63,7 @@ export default class Projector {
     let dir = this.data?.projector[this.config.pwd];
     if (!dir) {
       dir = {};
+      this.data.projector[this.config.pwd] = dir;
     }
     dir[key] = value;
   }
@@ -75,16 +75,25 @@ export default class Projector {
     }
   }
 
+  save() {
+    const configPath = path.dirname(this.config.config);
+    if (!fs.existsSync(configPath)) {
+
+      fs.mkdirSync(configPath, { recursive: true });
+    }
+    fs.writeFileSync(this.config.config, JSON.stringify(this.data));
+  }
+
   static fromConfig(config: Config): Projector {
-    if (existsSync(config.config)) {
-      let data: Data = { projector: {} };
+    let data: Data = { projector: {} };
+    if (fs.existsSync(config.config)) {
       try {
-        data = JSON.parse(readFileSync(config.config, 'utf-8').toString());
+        data = JSON.parse(fs.readFileSync(config.config, 'utf-8').toString());
       } catch (error) {
         data = defaultData;
         return new Projector(config, data);
       }
     }
-    return new Projector(config, defaultData);
+    return new Projector(config, data);
   }
 }

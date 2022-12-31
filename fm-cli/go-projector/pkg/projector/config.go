@@ -39,7 +39,8 @@ func getConfig(opts *Opts) (string, error) {
 		return "", err
 	}
 
-	return path.Join(config, "projector", "projector.json"), nil
+	p := path.Join(config, ".config/projector", "projector.json")
+	return p, nil
 }
 
 func getOperation(opts *Opts) Operation {
